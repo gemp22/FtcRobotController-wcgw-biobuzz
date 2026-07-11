@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTC Robot Control Cheat Sheet</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            max-width: 850px;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #e9f5ff;
+            font-size: 1.1em;
+            color: #0056b3;
+        }
+        .header-row th {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .initial-state {
+            background-color: #e9f5ff;
+            border-left: 5px solid #007bff;
+            padding: 12px;
+            margin-top: 15px;
+        }
+        .initial-state h3 {
+            margin-top: 0;
+            color: #0056b3;
+        }
+        /* Print-specific styles */
+        @media print {
+            body {
+                max-width: 100%;
+                font-size: 9pt;
+                margin: 10px;
+            }
+            table {
+                page-break-inside: auto;
+            }
+            tr {
+                page-break-inside: avoid;
+            }
+            th, td {
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr class="header-row">
+        <th colspan="4">Robot Controls Cheat Sheet</th>
+    </tr>
+    <tr>
+        <th>Controller</th>
+        <th>Control (Standard / PS)</th>
+        <th>Function</th>
+        <th>Hardware Name(s)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Gamepad 1 Controls -->
+    <tr>
+        <td rowspan="6"><b>Driver (GP1)</b></td>
+        <td><b>Left Stick</b></td>
+        <td>Drive / Strafe</td>
+        <td>front_left_drive, back_left_drive, front_right_drive, back_right_drive</td>
+    </tr>
+    <tr>
+        <td><b>Right Stick</b></td>
+        <td>Turn</td>
+        <td>front_left_drive, back_left_drive, front_right_drive, back_right_drive</td>
+    </tr>
+    <tr>
+        <td><b>D-Pad Up / Down</b></td>
+        <td>Adjust Roller Bed Speed</td>
+        <td>left_roller_bed_servo, right_roller_bed_servo</td>
+    </tr>
+    <tr>
+        <td><b>Y / ▲</b></td>
+        <td>Cycle Feeder Direction (Off/Fwd/Rev)</td>
+        <td>left_feeder_servo, right_feeder_servo</td>
+    </tr>
+    <tr>
+        <td><b>Start / Options</b></td>
+        <td>Full System ON (Shooter & Intake)</td>
+        <td>flywheel_1, flywheel_2, booster_servo, intake_roller, all_servos</td>
+    </tr>
+    <tr>
+        <td><b>Back / Share</b></td>
+        <td>Full System OFF (Shooter & Intake)</td>
+        <td>flywheel_1, flywheel_2, booster_servo, intake_roller, all_servos</td>
+    </tr>
+
+    <!-- Gamepad 2 Controls -->
+    <tr>
+        <td rowspan="13"><b>Operator (GP2)</b></td>
+        <td><b>Left Stick Up / Down</b></td>
+        <td>Adjust Shooter Angle</td>
+        <td>shooter_servo</td>
+    </tr>
+    <tr>
+        <td><b>Right Stick Left / Right</b></td>
+        <td>Manual Turret Rotation</td>
+        <td>turret_servo, turret_encoder</td>
+    </tr>
+    <tr>
+        <td><b>D-Pad Up / Down</b></td>
+        <td>Adjust Flywheel RPM</td>
+        <td>flywheel_1, flywheel_2</td>
+    </tr>
+    <tr>
+        <td><b>D-Pad Left / Right</b></td>
+        <td>Adjust Booster Speed</td>
+        <td>booster_servo</td>
+    </tr>
+    <tr>
+        <td><b>Right Bumper (R1)</b></td>
+        <td>Toggle Shooting Mode (Preload/Manual)</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><b>Right Trigger (R2)</b></td>
+        <td>Pull Trigger (Shoot Pre-loaded Ball)</td>
+        <td>booster_servo, left_feeder_servo, shooter_beam_sensor</td>
+    </tr>
+    <tr>
+        <td><b>Left Bumper (L1)</b></td>
+        <td>Gates to Pass-Thru (Hold)</td>
+        <td>left_gate_servo, mid_gate_servo, right_gate_servo</td>
+    </tr>
+    <tr>
+        <td><b>Y / ▲</b></td>
+        <td>Toggle Intake Roller</td>
+        <td>intake_roller</td>
+    </tr>
+    <tr>
+        <td><b>X / ■</b></td>
+        <td>Manual Open Left Gate</td>
+        <td>left_gate_servo</td>
+    </tr>
+    <tr>
+        <td><b>A / ✖</b></td>
+        <td>Manual Open Mid Gate</td>
+        <td>mid_gate_servo</td>
+    </tr>
+    <tr>
+        <td><b>B / ●</b></td>
+        <td>Manual Open Right Gate</td>
+        <td>right_gate_servo</td>
+    </tr>
+    <tr>
+        <td><b>Options / Start</b></td>
+        <td>Cycle Turret Aim Mode (Manual -> Red -> Blue)</td>
+        <td>limelight, turret_servo</td>
+    </tr>
+    <tr>
+        <td><b>Back / Share</b></td>
+        <td>Cycle Debug Mode</td>
+        <td>flywheel_1/2, left/mid/right_color_sensor, limelight, etc.</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="initial-state">
+    <h3>Initial State at Match Start</h3>
+    <ul>
+        <li><strong>Drivetrain:</strong> Ready.</li>
+        <li><strong>Intake System:</strong> Intake Roller is ON. Feeder servos are REVERSED.</li>
+        <li><strong>Gates:</strong> All three gates are CLOSED.</li>
+        <li><strong>Shooter Assembly:</strong> Turret is centered. Shooter angle is at default. Flywheel target is 500 RPM.</li>
+    </ul>
+</div>
+
+</body>
+</html>
