@@ -1,5 +1,7 @@
-## NOTICE
 
+# What Could Go Wrong Code for the BioBuzz (2026-2027) competition season.
+
+## NOTICE
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.
 
 ## Welcome!
