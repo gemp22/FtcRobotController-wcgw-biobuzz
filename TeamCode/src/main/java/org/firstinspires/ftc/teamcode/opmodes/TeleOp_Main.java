@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.FieldSimulator;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 
 import org.firstinspires.ftc.teamcode.util.Alliance;
@@ -28,7 +29,7 @@ public class TeleOp_Main extends OpMode {
     // --- Subsystem and Hardware Declarations ---
     private RobotHardware robot;
     private Drivetrain drivetrain;
-////    private Intake intake;
+    private Intake intake;
 ////    private Shooter shooter;
 //    private Turret turret;
     private FieldSimulator fieldSimulator;
@@ -118,7 +119,7 @@ public class TeleOp_Main extends OpMode {
 
         // 2. Initialize all subsystems by passing the hardware hub
         drivetrain = new Drivetrain(robot);
-//        intake = new Intake(robot);
+        intake = new Intake(robot);
 //        shooter = new Shooter(robot);
 //        turret = new Turret(robot);
         fieldSimulator = new FieldSimulator();
@@ -227,7 +228,7 @@ public class TeleOp_Main extends OpMode {
 //        intake.toggleIntakeRoller();
 ////        intake.setRollerBedSpeed(1);
 //        intake.setFeederState(Intake.FeederState.REVERSE);
-
+        intake.changeState(Intake.IntakeState.FORWARD);
 
         // If the initial state is an aiming state, tell the turret what to do.
 //        if (turretState == TurretAimingState.AIM_RED) {
@@ -274,7 +275,7 @@ public class TeleOp_Main extends OpMode {
         // Call the update() method for each subsystem on every loop.
         // This is where continuous logic, like PID loops and timers, is executed.
         drivetrain.update();
-//        intake.update();
+        intake.update();
 //        shooter.update(intake, turret, drivetrain);
 //        turret.update(drivetrain);
         fieldSimulator.update(drivetrain);
@@ -321,17 +322,20 @@ public class TeleOp_Main extends OpMode {
         if (gamepad1.yWasPressed()) {
             // NOTE: Current functionality 'intake.cycleFeederState()' has been replaced by Open Gate path
             // if (gamepad1.yWasPressed()) { intake.cycleFeederState(); }
-            executePredefinedPath(PathDestination.OPEN_GATE);
+//            executePredefinedPath(PathDestination.OPEN_GATE);
+            intake.changeState(Intake.IntakeState.OFF);
         }
 
         // Button B: Drive to and Push Ramp Gate
         if (gamepad1.bWasPressed()) {
-            executePredefinedPath(PathDestination.PUSH_GATE);
+//            executePredefinedPath(PathDestination.PUSH_GATE);
+            intake.changeState(Intake.IntakeState.FORWARD);
         }
 
         // Button X: Return to Shooting Position
         if (gamepad1.xWasPressed()) {
-            executePredefinedPath(PathDestination.RETURN_SHOOT);
+//            executePredefinedPath(PathDestination.RETURN_SHOOT);
+            intake.changeState(Intake.IntakeState.REVERSE);
         }
 
 //        // Drivetrain
