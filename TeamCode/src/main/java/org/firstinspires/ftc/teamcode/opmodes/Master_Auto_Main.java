@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.commands.CommandBase;
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.util.Alliance;
 
 import java.util.Locale;
@@ -23,7 +24,7 @@ public class Master_Auto_Main extends OpMode {
     // --- Subsystems ---
     private RobotHardware robot;
     private Drivetrain drivetrain;
-//    private Intake intake;
+    private Intake intake;
 //    private Shooter shooter;
 //    private Turret turret;
     private CommandScheduler scheduler;
@@ -46,12 +47,12 @@ public class Master_Auto_Main extends OpMode {
         robot.init(hardwareMap);
 
         drivetrain = new Drivetrain(robot);
-//        intake = new Intake(robot);
+        intake = new Intake(robot);
 //        shooter = new Shooter(robot);
 //        turret = new Turret(robot);
 
         drivetrain.resetOdometry();
-        scheduler = new CommandScheduler(drivetrain, 29.0);
+        scheduler = new CommandScheduler(drivetrain, intake, 29.0);
 
 //        Turret.resetGamePattern();
 //        turret.startAutoDetectStart();
@@ -133,7 +134,7 @@ public class Master_Auto_Main extends OpMode {
             module.clearBulkCache();
         }
         drivetrain.update();
-//        intake.update();
+        intake.update();
 //        shooter.update(intake, turret, drivetrain);
 //        turret.update(drivetrain);
         scheduler.update();
@@ -201,7 +202,7 @@ public class Master_Auto_Main extends OpMode {
     }
 
     private void buildAutonomousSequence(Alliance.Color alliance, Alliance.Position position, int variant, double delay) {
-        AutoSequenceFactory factory = new AutoSequenceFactory(scheduler, drivetrain, alliance, delay);
+        AutoSequenceFactory factory = new AutoSequenceFactory(scheduler, drivetrain, intake, alliance, delay);
         if (position == Alliance.Position.FAR) {
             switch (variant) {
 //                case 0: factory.buildFarCornerHusky(); break;

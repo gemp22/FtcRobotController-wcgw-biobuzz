@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 /**
  * A simple command that does nothing but wait for a specified amount of time.
@@ -24,7 +25,7 @@ public class WaitCommand extends CommandBase {
      * When the command starts, it resets the timer.
      */
     @Override
-    public void start(Drivetrain drivetrain) {
+    public void start(Drivetrain drivetrain, Intake intake) {
         timer.reset();
         log(getName(), String.format("Waiting for %.2f seconds.", timeoutSeconds));
     }

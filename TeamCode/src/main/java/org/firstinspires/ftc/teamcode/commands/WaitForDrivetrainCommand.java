@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 /**
  * A simple command that waits until the Drivetrain is no longer busy.
@@ -12,7 +13,7 @@ public class WaitForDrivetrainCommand extends CommandBase {
     private Drivetrain drivetrain;
 
     @Override
-    public void start(Drivetrain drivetrain) {
+    public void start(Drivetrain drivetrain, Intake intake) {
         this.drivetrain = drivetrain;
         log(getName(), "Now waiting for drivetrain to finish its path.");
     }

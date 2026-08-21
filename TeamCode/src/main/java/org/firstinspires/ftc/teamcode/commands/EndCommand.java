@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 /**
  * A command that stops all robot subsystems after a brief delay.
@@ -35,7 +36,7 @@ public class EndCommand extends CommandBase {
      * The actual stopping action is moved to the update() and isFinished() logic.
      */
     @Override
-    public void start(Drivetrain drivetrain) {
+    public void start(Drivetrain drivetrain, Intake intake) {
         log(getName(), String.format("Started. Shutdown sequence with a %.1f-second delay.", SHUTDOWN_DELAY_SECONDS));
 
         this.drivetrain = drivetrain;

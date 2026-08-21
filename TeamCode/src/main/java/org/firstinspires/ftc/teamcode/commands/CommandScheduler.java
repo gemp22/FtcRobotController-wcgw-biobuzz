@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,7 +19,7 @@ public class CommandScheduler {
     private boolean isTeardownActive = false;
 
     private final Drivetrain drivetrain;
-//    private final Intake intake;
+    private final Intake intake;
 //    private final Shooter shooter;
 //    private final Turret turret;
 
@@ -33,15 +34,15 @@ public class CommandScheduler {
 
     /**
      * Constructor with a configurable deadline
-     * @param drivetrain The Drivetrain subsystem.
-//     * @param intake The Intake subsystem.
-//     * @param shooter The Shooter subsystem.
-//     * @param turret The Turret subsystem.
+     * @param drivetrain The robot's Drivetrain subsystem.
+     * @param intake The robot's Intake subsystem.
+//     * @param shooter The robot's Shooter subsystem.
+//     * @param turret The robot's Turret subsystem.
      * @param deadlineSeconds The time in seconds at which to force the teardown sequence.
      */
-    public CommandScheduler(Drivetrain drivetrain, double deadlineSeconds) {
+    public CommandScheduler(Drivetrain drivetrain, Intake intake, double deadlineSeconds) {
         this.drivetrain = drivetrain;
-//        this.intake = intake;
+        this.intake = intake;
 //        this.shooter = shooter;
 //        this.turret = turret;
         this.autoDeadlineS = deadlineSeconds; // Set the deadline from the parameter
@@ -52,13 +53,13 @@ public class CommandScheduler {
     /**
      * Creates a CommandScheduler with a default teardown deadline of 28.0 seconds.
      * @param drivetrain The Drivetrain subsystem.
-//     * @param intake The Intake subsystem.
+     * @param intake The Intake subsystem.
 //     * @param shooter The Shooter subsystem.
 //     * @param turret The Turret subsystem.
      */
-    public CommandScheduler(Drivetrain drivetrain) {
+    public CommandScheduler(Drivetrain drivetrain, Intake intake) {
         // Chain to the new constructor, providing a default value.
-        this(drivetrain, 28.0);
+        this(drivetrain, intake, 28.0);
     }
 
     public static double getElapsedTime() {
@@ -154,7 +155,7 @@ public class CommandScheduler {
         Queue<Command> queueToCheck = isTeardownActive ? teardownQueue : mainQueue;
         if (!queueToCheck.isEmpty()) {
             for (Command cmd : activeCommands) {
-                if (cmd.isReadyForNext(drivetrain)) {
+                if (cmd.isReadyForNext(drivetrain, intake)) {
                     CommandBase.log("SCHEDULER", String.format("Command '%s' is ready for transition. Starting next.", cmd.getName()));
                     startNextCommand(queueToCheck);
                     break;
@@ -218,7 +219,7 @@ public class CommandScheduler {
                 CommandBase.log("SCHEDULER", String.format("Pulling from queue and starting: '%s'", nextCmd.getName()));
                 // Reset the transition flag before starting, in case the command is being reused.
                 nextCmd.resetTransition();
-                nextCmd.start(drivetrain);
+                nextCmd.start(drivetrain, intake);
                 activeCommands.add(nextCmd);
             }
         }

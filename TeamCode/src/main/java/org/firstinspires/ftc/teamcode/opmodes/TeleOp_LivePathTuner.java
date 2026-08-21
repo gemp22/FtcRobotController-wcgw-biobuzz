@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.commands.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.pathing.CurvePoint;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ public class TeleOp_LivePathTuner extends OpMode {
     // --- Subsystems ---
     private RobotHardware robot;
     private Drivetrain drivetrain;
-//    private Intake intake;
+    private Intake intake;
 //    private Shooter shooter;
 //    private Turret turret;
 
@@ -236,7 +237,7 @@ public class TeleOp_LivePathTuner extends OpMode {
         isGoingHome = false; // Reset the flag whenever a command starts
         currentCommand = commandQueue.poll();
         if (currentCommand != null) {
-            currentCommand.start(drivetrain);
+            currentCommand.start(drivetrain, intake);
         }
     }
 

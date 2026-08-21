@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.util.Blackboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import java.util.Locale;
@@ -85,7 +86,7 @@ public abstract class CommandBase implements Command {
     }
 
     @Override
-    public boolean isReadyForNext(Drivetrain drivetrain) {
+    public boolean isReadyForNext(Drivetrain drivetrain, Intake intake) {
         // If this command has already triggered a transition, it can't trigger another one.
         if (hasTriggeredTransition) {
             return false;
@@ -94,7 +95,7 @@ public abstract class CommandBase implements Command {
         boolean isReady = false;
         // If a custom condition is set, use it.
         if (transitionCondition != null) {
-            isReady = transitionCondition.shouldTransition(drivetrain);
+            isReady = transitionCondition.shouldTransition(drivetrain, intake);
         } else {
             // Default behavior: ready for next only when fully finished.
             isReady = isFinished();
@@ -107,13 +108,6 @@ public abstract class CommandBase implements Command {
         }
 
         return false;
-
-//        // If a custom condition is set, use it. Otherwise, default to finishing.
-//        if (transitionCondition != null) {
-//            return transitionCondition.shouldTransition(drivetrain, intake, shooter, turret);
-//        }
-//        // Default behavior: ready for next only when fully finished.
-//        return isFinished();
     }
 
     /**
@@ -126,7 +120,7 @@ public abstract class CommandBase implements Command {
 
     // Abstract methods from the Command interface that concrete classes must implement
     @Override
-    public abstract void start(Drivetrain drivetrain);
+    public abstract void start(Drivetrain drivetrain, Intake intake);
     @Override
     public abstract void update();
     @Override

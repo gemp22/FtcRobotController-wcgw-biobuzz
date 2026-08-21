@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.commands.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.pathing.CurvePoint;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class Auto_TestPath extends OpMode {
     // Subsystems
     private RobotHardware robot;
     private Drivetrain drivetrain;
-//    private Intake intake;
+    private Intake intake;
 //    private Shooter shooter;
 //    private Turret turret;
 
@@ -43,12 +44,12 @@ public class Auto_TestPath extends OpMode {
 
         drivetrain = new Drivetrain(robot);
         drivetrain.setDebug(true);
-//        intake = new Intake(robot);
+        intake = new Intake(robot);
 //        shooter = new Shooter(robot);
 //        turret = new Turret(robot);
 
         // --- NEW: Instantiate the CommandScheduler ---
-        scheduler = new CommandScheduler(drivetrain);
+        scheduler = new CommandScheduler(drivetrain, intake);
 
         // 2. IMPORTANT: Reset odometry at the start of autonomous
         drivetrain.resetOdometry();

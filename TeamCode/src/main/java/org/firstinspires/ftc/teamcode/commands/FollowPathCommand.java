@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pathing.CurvePoint;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 import java.util.ArrayList;
 
@@ -71,7 +72,7 @@ public class FollowPathCommand extends CommandBase {
 
         // Create a lambda that implements the TransitionCondition interface.
         // This lambda captures the finalPoint and distanceInches values.
-        TransitionCondition condition = (d) -> {
+        TransitionCondition condition = (d, i) -> {
             // Get the robot's current pose from the Drivetrain subsystem
             double robotX = d.getPose().getX(DistanceUnit.INCH);
             double robotY = d.getPose().getY(DistanceUnit.INCH);
@@ -98,7 +99,7 @@ public class FollowPathCommand extends CommandBase {
      */
     public FollowPathCommand transitionImmediately() {
         // A lambda that always returns true, so the scheduler moves on right away.
-        this.setTransitionCondition((d) -> true);
+        this.setTransitionCondition((d, i) -> true);
         return this;
     }
 
@@ -112,7 +113,7 @@ public class FollowPathCommand extends CommandBase {
      * Called when the command begins. It tells the Drivetrain to start following the path.
      */
     @Override
-    public void start(Drivetrain drivetrain) {
+    public void start(Drivetrain drivetrain, Intake intake) {
         this.drivetrain = drivetrain;
         timer.reset(); // Start the timeout timer
         log(getName(), String.format("Started (Timeout: %.1fs).", timeoutSeconds));

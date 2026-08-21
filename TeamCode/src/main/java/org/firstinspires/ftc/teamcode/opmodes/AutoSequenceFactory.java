@@ -18,17 +18,17 @@ public class AutoSequenceFactory {
 
     private final CommandScheduler scheduler;
     private final Drivetrain drivetrain;
-//    private final Intake intake;
+    private final Intake intake;
 //    private final Shooter shooter;
 //    private final Turret turret;
     private final Alliance.Color alliance;
     private final boolean isRed;
     private final double startDelay;
 
-    public AutoSequenceFactory(CommandScheduler scheduler, Drivetrain drivetrain, Alliance.Color alliance, double startDelay) {
+    public AutoSequenceFactory(CommandScheduler scheduler, Drivetrain drivetrain, Intake intake, Alliance.Color alliance, double startDelay) {
         this.scheduler = scheduler;
         this.drivetrain = drivetrain;
-//        this.intake = intake;
+        this.intake = intake;
 //        this.shooter = shooter;
 //        this.turret = turret;
         this.alliance = alliance;

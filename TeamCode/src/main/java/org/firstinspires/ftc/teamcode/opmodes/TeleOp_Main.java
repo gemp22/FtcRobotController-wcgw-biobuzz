@@ -123,7 +123,7 @@ public class TeleOp_Main extends OpMode {
 //        shooter = new Shooter(robot);
 //        turret = new Turret(robot);
         fieldSimulator = new FieldSimulator();
-        scheduler = new CommandScheduler(drivetrain);
+        scheduler = new CommandScheduler(drivetrain, intake);
 
         // Tell the scheduler to stop acting like it's in Autonomous mode
         scheduler.setTeleOpMode(true);

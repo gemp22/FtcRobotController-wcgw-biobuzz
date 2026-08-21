@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 import java.util.Locale;
 
@@ -32,7 +33,7 @@ public class WaitForTurretAimCommand extends CommandBase {
     }
 
     @Override
-    public void start(Drivetrain drivetrain) {
+    public void start(Drivetrain drivetrain, Intake intake) {
 //        this.turret = turret;
         timer.reset();
         log(getName(), String.format(Locale.US, "Now waiting for turret to aim and settle (Timeout: %.1fs).", timeoutSeconds));
