@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -49,6 +50,7 @@ public class Intake {
 
     // --- Hardware ---
     private final DcMotor intakeRoller;
+    private final DcMotor intakeRoller2;
 
     // --- State ---
 
@@ -69,15 +71,19 @@ public class Intake {
     public Intake(RobotHardware robot) {
         // Assign hardware from the hub
         this.intakeRoller = robot.intakeRoller;
+        this.intakeRoller2 = robot.intakeRoller2;
 
 
         // Instantiate helper objects
 
         // --- INITIAL CONFIGURATION ---
-        this.intakeRoller.setDirection(DcMotor.Direction.REVERSE);
+        this.intakeRoller.setDirection(DcMotor.Direction.FORWARD);
+        this.intakeRoller2.setDirection(DcMotor.Direction.FORWARD);
+
 
         // Set initial positions and powers
         this.intakeRoller.setPower(0);
+        this.intakeRoller2.setPower(0);
 
         }
 
@@ -114,12 +120,15 @@ public class Intake {
             switch (currentIntakeState) {
                 case FORWARD:
                     intakeRoller.setPower(INTAKE_ROLLER_SPEED_FORWARD);
+                    intakeRoller2.setPower(INTAKE_ROLLER_SPEED_FORWARD);
                     break;
                 case REVERSE:
                     intakeRoller.setPower(INTAKE_ROLLER_SPEED_BACKWARD);
+                    intakeRoller2.setPower(INTAKE_ROLLER_SPEED_BACKWARD);
                     break;
                 case OFF:
                     intakeRoller.setPower(0);
+                    intakeRoller2.setPower(0);
                 default:
                     break;
             }
@@ -142,6 +151,7 @@ public class Intake {
     public void stop() {
         // --- 1. Set all hardware to a stopped state ---
         intakeRoller.setPower(0);
+        intakeRoller2.setPower(0);
 
 
         // --- 2. Reset all state variables to their default values ---

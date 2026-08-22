@@ -36,8 +36,9 @@ public class RobotHardware {
     public static final String BACK_RIGHT_DRIVE_NAME = "back_right_drive";
     public static final String ODO_NAME = "odo";
 
-    public static final String INTAKE_ROLLER_NAME = "intake_roller";
+    public static final String INTAKE_ROLLER_NAME = "intake_roller_1";
 
+    public static final String INTAKE_ROLLER_2_NAME = "intake_roller_2";
 //    // Intake & Ball Transport
 //    public static final String INTAKE_ROLLER_NAME = "intake_roller";
 //    public static final String ROLLER_BED_MOTOR_NAME = "turret_encoder"; // we use the same port for the turret encoder and the roller bed motor
@@ -99,6 +100,8 @@ public class RobotHardware {
 //    public HuskyLens huskyLens;
     public DcMotor intakeRoller;
 
+    public DcMotor intakeRoller2;
+
     // Color Sensors
 //    public NormalizedColorSensor leftCS;
 //    public NormalizedColorSensor midCS;
@@ -135,6 +138,7 @@ public class RobotHardware {
         backRightDrive = hardwareMap.get(DcMotor.class, BACK_RIGHT_DRIVE_NAME);
         odo = hardwareMap.get(GoBildaPinpointDriver.class, ODO_NAME);
         intakeRoller = hardwareMap.get(DcMotor.class, INTAKE_ROLLER_NAME);
+        intakeRoller2 = hardwareMap.get(DcMotor.class, INTAKE_ROLLER_2_NAME);
 
         // Intake & Ball Transport
 //        intakeRoller = hardwareMap.get(DcMotor.class, INTAKE_ROLLER_NAME);

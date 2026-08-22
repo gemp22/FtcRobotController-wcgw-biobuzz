@@ -228,7 +228,7 @@ public class TeleOp_Main extends OpMode {
 //        intake.toggleIntakeRoller();
 ////        intake.setRollerBedSpeed(1);
 //        intake.setFeederState(Intake.FeederState.REVERSE);
-        intake.changeState(Intake.IntakeState.FORWARD);
+        intake.changeState(Intake.IntakeState.OFF);
 
         // If the initial state is an aiming state, tell the turret what to do.
 //        if (turretState == TurretAimingState.AIM_RED) {
