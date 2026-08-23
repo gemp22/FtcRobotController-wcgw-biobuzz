@@ -207,6 +207,7 @@ public class Master_Auto_Main extends OpMode {
             switch (variant) {
 //                case 0: factory.buildFarCornerHusky(); break;
                 case 0: factory.buildFarCornerV2(); break;
+                case 1: factory.buildAleTest(); break;
 //                case 2: factory.buildFarCornerOnly(); break;
 //                case 3: factory.buildFarSortV3(); break;
 //                case 4: factory.buildFarCornerHuskyOnly(); break;

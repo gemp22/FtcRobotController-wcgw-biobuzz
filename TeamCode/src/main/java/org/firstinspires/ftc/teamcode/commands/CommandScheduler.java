@@ -235,6 +235,14 @@ public class CommandScheduler {
     }
 
     /**
+     * Clears all queues, stops active commands, and resets internal flags.
+     * This prepares the scheduler for a completely new sequence of commands.
+     */
+    public void clearAll() {
+        reset();
+    }
+
+    /**
      * Clears the command queue and stops all active commands.
      */
     public void reset() {
