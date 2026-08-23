@@ -39,6 +39,7 @@ public class TeleOp_MissionRunner extends OpMode {
         robot.init(hardwareMap);
 
         drivetrain = new Drivetrain(robot);
+        drivetrain.setDebug(true);
         intake = new Intake(robot);
         scheduler = new CommandScheduler(drivetrain, intake);
         scheduler.setTeleOpMode(true); // Disable auto deadline for tuning/testing

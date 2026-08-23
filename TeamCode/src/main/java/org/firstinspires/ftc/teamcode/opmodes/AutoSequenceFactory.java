@@ -67,7 +67,7 @@ public class AutoSequenceFactory {
      */
     public void buildFarCornerV2() {
 //        commonFarInit();
-        boolean debug = false;
+        boolean debug = true;
         scheduler.add(new SetInitialPoseCommand(-62.04, y(14.00), 0.00));
 
 
