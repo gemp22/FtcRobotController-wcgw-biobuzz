@@ -102,92 +102,92 @@ public class AutoSequenceFactory {
         scheduler.add(new WaitCommand(3));
         scheduler.add(new IntakeCommand(Intake.IntakeState.OFF).withName("Intake OFF"));
 
-        ArrayList<CurvePoint> pathToHome = new ArrayList<>();
-        pathToHome.add(new CurvePoint(-50.70, y(55.50), 1.00, 0.40, 5.00, Math.toRadians(60.0), 0.60));
-        pathToHome.add(new CurvePoint(-62.04, y(14.00), 1.00, 1.00, 5, Math.toRadians(60.0), 1.00));
-        scheduler.add(new FollowPathCommand(pathToHome, h(-90), debug)
-                .withName("Drive home"));
+//        ArrayList<CurvePoint> pathToHome = new ArrayList<>();
+//        pathToHome.add(new CurvePoint(-50.70, y(55.50), 1.00, 0.40, 5.00, Math.toRadians(60.0), 0.60));
+//        pathToHome.add(new CurvePoint(-62.04, y(14.00), 1.00, 1.00, 5, Math.toRadians(60.0), 1.00));
+//        scheduler.add(new FollowPathCommand(pathToHome, h(-90), debug)
+//                .withName("Drive home"));
 
+
+        ArrayList<CurvePoint> driveToCornerB = new ArrayList<>();
+        driveToCornerB.add(new CurvePoint(-50.58, y(63.02), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToCornerB.add(new CurvePoint(-55.26, y(47.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        scheduler.add(new FollowPathCommand(driveToCornerB, h(-90), debug, 2)
+                .withName("Drive to Corner B"));
+
+        ArrayList<CurvePoint> driveToCornerC = new ArrayList<>();
+        driveToCornerC.add(new CurvePoint(-55.26, y(47.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToCornerC.add(new CurvePoint(-61.02, y(59.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        scheduler.add(new FollowPathCommand(driveToCornerC, h(90), debug, 2)
+                .withName("Drive to Corner C"));
+
+        scheduler.add(new WaitCommand(0.3));
+
+//        ArrayList<CurvePoint> driveToCornerD = new ArrayList<>();
+//        driveToCornerD.add(new CurvePoint(-61.02, y(59.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+//        driveToCornerD.add(new CurvePoint(-59.02, y(47.14), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+//        scheduler.add(new FollowPathCommand(driveToCornerD, h(-90), debug, 2)
+//                .withName("Drive to Corner D"));
 //
-//        ArrayList<CurvePoint> driveToCornerB = new ArrayList<>();
-//        driveToCornerB.add(new CurvePoint(-50.58, y(63.02), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        driveToCornerB.add(new CurvePoint(-55.26, y(47.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        scheduler.add(new FollowPathCommand(driveToCornerB, h(-90), debug, 2)
-//                .withName("Drive to Corner B"));
+//        scheduler.add(new WaitForDrivetrainCommand());
 //
-//        ArrayList<CurvePoint> driveToCornerC = new ArrayList<>();
-//        driveToCornerC.add(new CurvePoint(-55.26, y(47.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        driveToCornerC.add(new CurvePoint(-61.02, y(59.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        scheduler.add(new FollowPathCommand(driveToCornerC, h(90), debug, 2)
-//                .withName("Drive to Corner C"));
+//        ArrayList<CurvePoint> driveToCornerE = new ArrayList<>();
+//        driveToCornerE.add(new CurvePoint(-59.02, y(47.14), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+//        driveToCornerE.add(new CurvePoint(-61.02, y(59.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+//        scheduler.add(new FollowPathCommand(driveToCornerE, h(90), debug, 2)
+//                .withName("Drive to Corner E"));
 //
 //        scheduler.add(new WaitCommand(0.3));
-//
-////        ArrayList<CurvePoint> driveToCornerD = new ArrayList<>();
-////        driveToCornerD.add(new CurvePoint(-61.02, y(59.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-////        driveToCornerD.add(new CurvePoint(-59.02, y(47.14), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-////        scheduler.add(new FollowPathCommand(driveToCornerD, h(-90), debug, 2)
-////                .withName("Drive to Corner D"));
-////
-////        scheduler.add(new WaitForDrivetrainCommand());
-////
-////        ArrayList<CurvePoint> driveToCornerE = new ArrayList<>();
-////        driveToCornerE.add(new CurvePoint(-59.02, y(47.14), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-////        driveToCornerE.add(new CurvePoint(-61.02, y(59.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-////        scheduler.add(new FollowPathCommand(driveToCornerE, h(90), debug, 2)
-////                .withName("Drive to Corner E"));
-////
-////        scheduler.add(new WaitCommand(0.3));
-//
-//        // 4. Drive to Shoot Spot 2
-//        ArrayList<CurvePoint> driveToShoot2 = new ArrayList<>();
-//        driveToShoot2.add(new CurvePoint(-61.20, y(58.86), 0.40, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        driveToShoot2.add(new CurvePoint(-53.64, y(15.48), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
-//        scheduler.add(new FollowPathCommand(driveToShoot2, h(180), debug)
-//                .withName("Drive to Shoot spot 2"));
-//
-////        scheduler.add(new Shoot3BallsCommand().withName("Shoot second 3 Balls"));
-//
-//        // 5. Drive to Spike 1
-//        ArrayList<CurvePoint> pathToSpike1 = new ArrayList<>();
-//        pathToSpike1.add(new CurvePoint(-49.14, y(11.88), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
-//        pathToSpike1.add(new CurvePoint(-36.00, y(22.14), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
-//        pathToSpike1.add(new CurvePoint(-35.46, y(42.66), 0.80, 0.80, 10.00, Math.toRadians(60.0), 0.60));
-//        pathToSpike1.add(new CurvePoint(-35.28, y(51.82), 0.40, 0.80, 10.00, Math.toRadians(60.0), 0.60));
-//        scheduler.add(new FollowPathCommand(pathToSpike1, h(90), debug).withName("Drive to Spike 1"));
-//
-//        // 6. Drive to Shoot Spot 3
-//        ArrayList<CurvePoint> pathToShot3 = new ArrayList<>();
-//        pathToShot3.add(new CurvePoint(-35.28, y(51.84), 1.00, 1.00, 5.00, Math.toRadians(60.0), 1.00));
-//        pathToShot3.add(new CurvePoint(-46.62, y(12.62), 1.00, 1.00, 5.00, Math.toRadians(60.0), 1.00));
-//        scheduler.add(new FollowPathCommand(pathToShot3, h(-90), debug)
-//                .withName("Drive to Shoot Spot 3"));
-//
-////        scheduler.add(new Shoot3BallsCommand().withName("Shoot third 3 Balls"));
-//
-//
-//        ArrayList<CurvePoint> driveToCornerH = new ArrayList<>();
-//        driveToCornerH.add(new CurvePoint(-50.70, y(11.70), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        driveToCornerH.add(new CurvePoint(-54.54, y(50.04), 1.00, 0.40, 5.00, Math.toRadians(60.0), 0.60));
-//        driveToCornerH.add(new CurvePoint(-58.68, y(62.46), 1.00, 0.40, 5.00, Math.toRadians(60.0), 0.60));
-//        scheduler.add(new FollowPathCommand(driveToCornerH, h(115), debug, 4)
-//                .withName("Drive In Bump 3"));
-//
-//        scheduler.add(new WaitCommand(.3));
-//
-//        ArrayList<CurvePoint> driveToCornerI = new ArrayList<>();
-//        driveToCornerI.add(new CurvePoint(-58.68, y(62.46), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        driveToCornerI.add(new CurvePoint(-55.26, y(47.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        scheduler.add(new FollowPathCommand(driveToCornerI, h(-90), debug, 2)
-//                .withName("Drive Out Bump 3"));
-//
-//        ArrayList<CurvePoint> driveToShoot4 = new ArrayList<>();
-//        driveToShoot4.add(new CurvePoint(-61.20, y(58.86), 0.40, 0.40, 10.00, Math.toRadians(60.0), 0.60));
-//        driveToShoot4.add(new CurvePoint(-53.64, y(15.48), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
-//        scheduler.add(new FollowPathCommand(driveToShoot4, h(180), debug)
-//                .withName("Drive to Shoot spot 4"));
-//
-////        scheduler.add(new Shoot3BallsCommand().withName("Shoot fourth 3 Balls"));
+
+        // 4. Drive to Shoot Spot 2
+        ArrayList<CurvePoint> driveToShoot2 = new ArrayList<>();
+        driveToShoot2.add(new CurvePoint(-61.20, y(58.86), 0.40, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToShoot2.add(new CurvePoint(-53.64, y(15.48), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        scheduler.add(new FollowPathCommand(driveToShoot2, h(180), debug)
+                .withName("Drive to Shoot spot 2"));
+
+//        scheduler.add(new Shoot3BallsCommand().withName("Shoot second 3 Balls"));
+
+        // 5. Drive to Spike 1
+        ArrayList<CurvePoint> pathToSpike1 = new ArrayList<>();
+        pathToSpike1.add(new CurvePoint(-49.14, y(11.88), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        pathToSpike1.add(new CurvePoint(-36.00, y(22.14), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        pathToSpike1.add(new CurvePoint(-35.46, y(42.66), 0.80, 0.80, 10.00, Math.toRadians(60.0), 0.60));
+        pathToSpike1.add(new CurvePoint(-35.28, y(51.82), 0.40, 0.80, 10.00, Math.toRadians(60.0), 0.60));
+        scheduler.add(new FollowPathCommand(pathToSpike1, h(90), debug).withName("Drive to Spike 1"));
+
+        // 6. Drive to Shoot Spot 3
+        ArrayList<CurvePoint> pathToShot3 = new ArrayList<>();
+        pathToShot3.add(new CurvePoint(-35.28, y(51.84), 1.00, 1.00, 5.00, Math.toRadians(60.0), 1.00));
+        pathToShot3.add(new CurvePoint(-46.62, y(12.62), 1.00, 1.00, 5.00, Math.toRadians(60.0), 1.00));
+        scheduler.add(new FollowPathCommand(pathToShot3, h(-90), debug)
+                .withName("Drive to Shoot Spot 3"));
+
+//        scheduler.add(new Shoot3BallsCommand().withName("Shoot third 3 Balls"));
+
+
+        ArrayList<CurvePoint> driveToCornerH = new ArrayList<>();
+        driveToCornerH.add(new CurvePoint(-50.70, y(11.70), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToCornerH.add(new CurvePoint(-54.54, y(50.04), 1.00, 0.40, 5.00, Math.toRadians(60.0), 0.60));
+        driveToCornerH.add(new CurvePoint(-58.68, y(62.46), 1.00, 0.40, 5.00, Math.toRadians(60.0), 0.60));
+        scheduler.add(new FollowPathCommand(driveToCornerH, h(115), debug, 4)
+                .withName("Drive In Bump 3"));
+
+        scheduler.add(new WaitCommand(.3));
+
+        ArrayList<CurvePoint> driveToCornerI = new ArrayList<>();
+        driveToCornerI.add(new CurvePoint(-58.68, y(62.46), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToCornerI.add(new CurvePoint(-55.26, y(47.76), 1.00, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        scheduler.add(new FollowPathCommand(driveToCornerI, h(-90), debug, 2)
+                .withName("Drive Out Bump 3"));
+
+        ArrayList<CurvePoint> driveToShoot4 = new ArrayList<>();
+        driveToShoot4.add(new CurvePoint(-61.20, y(58.86), 0.40, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToShoot4.add(new CurvePoint(-53.64, y(15.48), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        scheduler.add(new FollowPathCommand(driveToShoot4, h(180), debug)
+                .withName("Drive to Shoot spot 4"));
+
+//        scheduler.add(new Shoot3BallsCommand().withName("Shoot fourth 3 Balls"));
 
         commonFarTeardown();
     }
