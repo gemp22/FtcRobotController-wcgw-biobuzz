@@ -3,6 +3,12 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.MovingStatistics;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
@@ -11,6 +17,8 @@ import org.firstinspires.ftc.teamcode.util.Alliance;
 import org.firstinspires.ftc.teamcode.util.MissionExecutor;
 import org.firstinspires.ftc.teamcode.util.MissionListener;
 import org.firstinspires.ftc.teamcode.util.MissionParseException;
+
+import java.util.Locale;
 
 /**
  * TeleOp OpMode to receive and execute Mission Scripts from FTCSimulator.
@@ -24,6 +32,9 @@ public class TeleOp_MissionRunner extends OpMode {
     private CommandScheduler scheduler;
     private MissionListener listener;
     private MissionExecutor executor;
+
+    private MovingStatistics loopTimes = new MovingStatistics(100);
+    private ElapsedTime loopTimer = new ElapsedTime();
 
     private Alliance.Color selectedAlliance = Alliance.Color.BLUE;
     private boolean debugMode = true;
@@ -40,6 +51,8 @@ public class TeleOp_MissionRunner extends OpMode {
 
         drivetrain = new Drivetrain(robot);
         drivetrain.setDebug(true);
+        drivetrain.resetOdometry();
+
         intake = new Intake(robot);
         scheduler = new CommandScheduler(drivetrain, intake);
         scheduler.setTeleOpMode(true); // Disable auto deadline for tuning/testing
@@ -85,6 +98,8 @@ public class TeleOp_MissionRunner extends OpMode {
 
     @Override
     public void loop() {
+        loopTimer.reset();
+
         // Check for new mission
         if (listener.hasNewMission()) {
             String script = listener.getMissionAndReset();
@@ -109,6 +124,9 @@ public class TeleOp_MissionRunner extends OpMode {
         scheduler.update();
 
         updateTelemetry();
+
+        // Record loop time for performance monitoring
+        loopTimes.add(loopTimer.nanoseconds());
     }
 
     @Override
@@ -124,6 +142,7 @@ public class TeleOp_MissionRunner extends OpMode {
     private void updateTelemetry() {
         telemetry.addLine("=== MISSION RUNNER STATUS ===");
         telemetry.addData("Alliance", selectedAlliance);
+        telemetry.addData("Loop Freq (Hz)", "%.1f", 1 / (loopTimes.getMean() / 1e9));
         
         if (lastError != null) {
             telemetry.addLine("!!! PARSE ERROR !!!");
@@ -140,7 +159,13 @@ public class TeleOp_MissionRunner extends OpMode {
         }
         
         telemetry.addLine("-----------------------------");
-        telemetry.addData("Robot Pose", drivetrain.getPose().toString());
+        
+        Pose2D pose = drivetrain.getPose();
+        String poseStr = String.format(Locale.US, "X:%.1f Y:%.1f H:%.0f",
+                pose.getX(DistanceUnit.INCH),
+                pose.getY(DistanceUnit.INCH),
+                pose.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Robot Pose", poseStr);
         telemetry.update();
     }
 }
