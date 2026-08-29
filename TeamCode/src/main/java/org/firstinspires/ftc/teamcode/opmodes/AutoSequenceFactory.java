@@ -255,11 +255,37 @@ public class AutoSequenceFactory {
         ArrayList<CurvePoint> pathToShoot = new ArrayList<>();
             pathToShoot.add(new CurvePoint(14.00, y(61.00), 1.00, 1.00, 10, Math.toRadians(60.0), 1.00));
             pathToShoot.add(new CurvePoint(12.00, y(56.00), 1.00, 1.00, 10, Math.toRadians(60.0), 1.00));
-            pathToShoot.add(new CurvePoint(-53.00, y(49.00), 0.80, 1.00, 10, Math.toRadians(60.0), 1.00));
+            pathToShoot.add(new CurvePoint(-58.00, y(55.00), 0.60, 1.00, 10, Math.toRadians(60.0), 1.00));
         scheduler.add(new FollowPathCommand(pathToShoot, fa(90), debug)
                 .withName("Drive to Shooting Spot"));
 
         scheduler.add(new WaitCommand(1.5));
+
+
+
+        scheduler.add(new IntakeCommand(Intake.IntakeState.OFF));
+        // 2. Drive to Shooting Spot
+        ArrayList<CurvePoint> pathToHuman = new ArrayList<>();
+        pathToHuman.add(new CurvePoint(-58.00, y(55.00), 0.60, 1.00, 10, Math.toRadians(60.0), 1.00));
+        pathToHuman.add(new CurvePoint(12.00, y(56.00), 1.00, 1.00, 10, Math.toRadians(60.0), 1.00));
+        pathToHuman.add(new CurvePoint(14.00, y(61.00), 1.00, 1.00, 10, Math.toRadians(60.0), 1.00));
+
+        scheduler.add(new FollowPathCommand(pathToHuman, fa(-90), debug)
+                .withName("Drive to Human Player"));
+
+        scheduler.add(new WaitCommand(5));
+
+        ArrayList<CurvePoint> driveToShoot = new ArrayList<>();
+        driveToShoot.add(new CurvePoint(14.00, y(60.00), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToShoot.add(new CurvePoint(4.14, y(59.58), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToShoot.add(new CurvePoint(-1.80, y(56.88), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToShoot.add(new CurvePoint(-4.86, y(50.04), 0.70, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        driveToShoot.add(new CurvePoint(-4.50, y(15.18), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+
+// 3. Create and add the command to the scheduler
+        scheduler.add(new FollowPathCommand(driveToShoot, Math.toRadians(90.0), true));
+
+        scheduler.add(new IntakeCommand(Intake.IntakeState.REVERSE));
 
 //        scheduler.add(new IntakeCommand(Intake.IntakeState.FORWARD));
 ////        scheduler.add(new Shoot3BallsCommand().withName("Shoot first 3 Balls"));
