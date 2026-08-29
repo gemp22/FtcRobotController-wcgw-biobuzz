@@ -4,9 +4,6 @@
 *.ap_
 *.aab
 
-ale_*.txt
-ale_*.html
-
 !libs/*.aar
 
 # Files for the ART/Dalvik VM
