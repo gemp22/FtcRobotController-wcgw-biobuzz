@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -10,6 +11,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.util.BallColor;
+import org.firstinspires.ftc.teamcode.util.IntakeRoller;
+
 
 /**
  * The Intake subsystem is responsible for collecting balls from the field,
@@ -19,6 +22,7 @@ import org.firstinspires.ftc.teamcode.util.BallColor;
 public class Intake {
 
     // --- Constants ---
+    private final IntakeRoller rollerController;
     private static final double INTAKE_ROLLER_SPEED = 1.0;
 
     private static final double INTAKE_ROLLER_SPEED_FORWARD = 1.0;
@@ -66,26 +70,29 @@ public class Intake {
 
     // --- State variables to track last set power ---
     private double lastIntakeRollerPower = -999;
-    // State variables for individual gate toggles
 
     public Intake(RobotHardware robot) {
-        // Assign hardware from the hub
         this.intakeRoller = robot.intakeRoller;
         this.intakeRoller2 = robot.intakeRoller2;
 
+        // NEW: Cast motors to DcMotorEx to support velocity-based PIDF control
+        DcMotorEx motor1 = (DcMotorEx) robot.intakeRoller;
+        DcMotorEx motor2 = (DcMotorEx) robot.intakeRoller2;
 
-        // Instantiate helper objects
+        // NEW: Initialize the PIDF controller utility
+        this.rollerController = new IntakeRoller(motor1, motor2);
 
-        // --- INITIAL CONFIGURATION ---
+        // NEW: Set PIDF coefficients (kP, kI, kD, kF)
+        // 0.5 kF provides ~50% baseline power for the 6000 RPM motors
+        this.rollerController.setPIDFCoefficients(0.01, 0.0, 0.0, 0.5);
+
+        /* --- OLD CODE (PRE-PIDF) ---
         this.intakeRoller.setDirection(DcMotor.Direction.FORWARD);
         this.intakeRoller2.setDirection(DcMotor.Direction.FORWARD);
-
-
-        // Set initial positions and powers
         this.intakeRoller.setPower(0);
         this.intakeRoller2.setPower(0);
-
-        }
+        */
+    }
 
     // --- High-Level Control Methods ---
 
@@ -105,61 +112,62 @@ public class Intake {
 
 
     /**
-     * This method should be called in every loop of the OpMode.
-     * It handles state updates like timed gate closing and setting motor powers.
+     * This method handles state updates for the intake roller.
+     * Uses the PIDF controller for forward motion and manual power for reverse.
      */
     public void update() {
-        // --- Only update camera if enabled ---
-
-        // --- Only set power if it has changed ---
-
-        // 1. Intake Roller
-
-
         if (currentIntakeState != previousIntakeState) {
             switch (currentIntakeState) {
                 case FORWARD:
+                    // NEW: Use PIDF to maintain 3000 RPM (approx 50% speed)
+                    rollerController.setRPM(3000);
+                    /* --- OLD CODE ---
                     intakeRoller.setPower(INTAKE_ROLLER_SPEED_FORWARD);
                     intakeRoller2.setPower(INTAKE_ROLLER_SPEED_FORWARD);
+                    */
                     break;
                 case REVERSE:
+                    // NEW: Use manual override for 100% outtake power
+                    rollerController.setPower(-1.0);
+                    /* --- OLD CODE ---
                     intakeRoller.setPower(INTAKE_ROLLER_SPEED_BACKWARD);
                     intakeRoller2.setPower(INTAKE_ROLLER_SPEED_BACKWARD);
+                    */
                     break;
                 case OFF:
+                    // NEW: Use controller to stop and reset PID internal state
+                    rollerController.stop();
+                    /* --- OLD CODE ---
                     intakeRoller.setPower(0);
                     intakeRoller2.setPower(0);
+                    */
+                    break;
                 default:
+                    rollerController.stop();
                     break;
             }
             previousIntakeState = currentIntakeState;
         }
-        // 2. Roller Bed Motor
 
-
-        // 3. Feeder Servos
-        // Determine the target power for each feeder servo
-
-        // Set left feeder power if it changed
-
+        // NEW: Heartbeat - calculates and applies motor power every loop
+        rollerController.update();
     }
 
 
     /**
-     * Stops all motors and servos AND resets the state of the subsystem.
+     * Stops all motors and resets the subsystem state.
      */
     public void stop() {
-        // --- 1. Set all hardware to a stopped state ---
+        // NEW: Stop the PID controller (handles resetting motor power to 0)
+        rollerController.stop();
+        
+        /* --- OLD CODE ---
         intakeRoller.setPower(0);
         intakeRoller2.setPower(0);
+        */
 
-
-        // --- 2. Reset all state variables to their default values ---
         changeState(IntakeState.OFF);
-
-        // --- 3. Close any open resources ---
-        // This ensures the debug plotters are closed correctly
-        }
+    }
 
     /**
      * Enables debug plotting for a specific color sensor.
@@ -192,5 +200,9 @@ public class Intake {
     public void changeState(IntakeState newState) {
         currentIntakeState = newState;
 
+    }
+
+    public IntakeRoller getRollerController() {
+        return rollerController;
     }
 }
