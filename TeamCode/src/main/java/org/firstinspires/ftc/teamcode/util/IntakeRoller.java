@@ -18,7 +18,7 @@ public class IntakeRoller {
     public static double TICKS_PER_REVOLUTION = 28.0;
 
     // Default PIDF Coefficients
-    private static final double DEFAULT_KP = 0.00; // Adjust if the motor is too slow to react to load
+    private static final double DEFAULT_KP = 0.01; // Adjust if the motor is too slow to react to load
     private static final double DEFAULT_KI = 0.00; // Adjust to eliminate steady-state error
     private static final double DEFAULT_KD = 0.00; // Adjust to dampen oscillations
     private static final double DEFAULT_KF = 0.50; // Feedforward: Baseline power needed to spin at ~50% speed
@@ -122,7 +122,7 @@ public class IntakeRoller {
     public void adjustF(double delta) { this.kF += delta; reset(); }
 
     public double getCurrentRPM() {
-        double currentTPS = intakeMotor2.getVelocity();
+        double currentTPS = intakeMotor1.getVelocity();
         return (currentTPS * 60.0) / TICKS_PER_REVOLUTION;
     }
 

@@ -34,7 +34,7 @@ public class Master_Auto_Main extends OpMode {
     private int manualConfigIndex = 0; // 0 to 19 (Pos x Alliance x Variant)
     private int selectedVariantIndex = 0; // Used for Auto-Mode only
     private final String[] variantLabels = {"A", "B", "C", "D", "E"};
-    private static final String[] FAR_TITLES = {"Corner Husky", "Corner & Spike", "BIOBUZZ Test Auto", "Sort", "Corner Husky Only"};
+    private static final String[] FAR_TITLES = {"Corner Husky", "Corner & Spike", "BIOBUZZ Test Auto", "BioBuzz Test Auto V2", "Corner Husky Only"};
     private static final String[] NEAR_TITLES = {"Double Gate", "Open Gate", "Sort", "TBD", "TBD"};
 
     private double startDelay = 0.0;
@@ -209,6 +209,7 @@ public class Master_Auto_Main extends OpMode {
                 case 0: factory.buildFarCornerV2(); break;
                 case 1: factory.buildAleTest(); break;
                 case 2: factory.bioBuzzPracticeAuto(); break;
+                case 3: factory.buildBioTestTwo(); break;
 //                case 2: factory.buildFarCornerOnly(); break;
 //                case 3: factory.buildFarSortV3(); break;
 //                case 4: factory.buildFarCornerHuskyOnly(); break;

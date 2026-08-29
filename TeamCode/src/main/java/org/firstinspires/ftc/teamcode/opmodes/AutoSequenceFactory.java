@@ -396,6 +396,55 @@ public class AutoSequenceFactory {
     }
 
 
+    public void buildBioTestTwo() {
+
+        boolean debug = true;
+
+        scheduler.add(new SetInitialPoseCommand(14.00, y(61.00), h(-90.00)).withName("Start Pose"));
+        scheduler.add(new IntakeCommand(Intake.IntakeState.FORWARD));
+        ArrayList<CurvePoint> path1 = new ArrayList<>();
+        path1.add(new CurvePoint(14.00, y(61.00), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        path1.add(new CurvePoint(12.00, y(56.00), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        path1.add(new CurvePoint(4.32, y(25.92), 0.95, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        path1.add(new CurvePoint(-24.48, y(18.72), 0.80, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        path1.add(new CurvePoint(-58.00, y(55.00), 0.60, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        scheduler.add(new FollowPathCommand(path1, fa(90.00), debug)
+                .withName("Drive to Shooting Spot"));
+
+        scheduler.add(new WaitCommand(1.5));
+        scheduler.add(new IntakeCommand(Intake.IntakeState.OFF));
+        ArrayList<CurvePoint> path2 = new ArrayList<>();
+        path2.add(new CurvePoint(-58.00, y(55.00), 0.60, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        path2.add(new CurvePoint(12.00, y(56.00), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        path2.add(new CurvePoint(14.00, y(61.00), 1.00, 1.00, 10.00, Math.toRadians(60.0), 1.00));
+        scheduler.add(new FollowPathCommand(path2, fa(-90.00), debug)
+                .withName("Drive to Human Player"));
+
+        scheduler.add(new WaitCommand(5.0));
+        ArrayList<CurvePoint> path3 = new ArrayList<>();
+        path3.add(new CurvePoint(14.00, y(60.00), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path3.add(new CurvePoint(4.14, y(59.58), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path3.add(new CurvePoint(-1.80, y(56.88), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path3.add(new CurvePoint(-4.86, y(50.04), 0.70, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path3.add(new CurvePoint(-4.50, y(15.18), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        scheduler.add(new FollowPathCommand(path3, fa(90.00), debug)
+                .withName("Drive"));
+
+        scheduler.add(new IntakeCommand(Intake.IntakeState.REVERSE));
+        scheduler.add(new WaitCommand(2.5));
+        ArrayList<CurvePoint> path4 = new ArrayList<>();
+        path4.add(new CurvePoint(-4.50, y(15.18), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path4.add(new CurvePoint(-4.86, y(50.04), 0.70, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path4.add(new CurvePoint(-1.80, y(56.88), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path4.add(new CurvePoint(4.14, y(59.58), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        path4.add(new CurvePoint(14.00, y(60.00), 0.60, 0.40, 10.00, Math.toRadians(60.0), 0.60));
+        scheduler.add(new FollowPathCommand(path4, fa(-90.00), debug)
+                .withName("DriveBack"));
+
+        scheduler.add(new IntakeCommand(Intake.IntakeState.OFF));
+    }
+
+
     /**
      * FAR Variant C: Corner Only
      */
