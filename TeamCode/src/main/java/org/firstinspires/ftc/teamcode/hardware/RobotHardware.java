@@ -98,7 +98,7 @@ public class RobotHardware {
 //    public CRServo leftBoosterServo;
 //    public CRServo rightBoosterServo;
 //    public HuskyLens huskyLens;
-    public DcMotorEx intakeRoller;
+    public DcMotorEx intakeRoller1;
 
     public DcMotorEx intakeRoller2;
 
@@ -137,7 +137,7 @@ public class RobotHardware {
         frontRightDrive = hardwareMap.get(DcMotor.class, FRONT_RIGHT_DRIVE_NAME);
         backRightDrive = hardwareMap.get(DcMotor.class, BACK_RIGHT_DRIVE_NAME);
         odo = hardwareMap.get(GoBildaPinpointDriver.class, ODO_NAME);
-        intakeRoller = hardwareMap.get(DcMotorEx.class, INTAKE_ROLLER_NAME);
+        intakeRoller1 = hardwareMap.get(DcMotorEx.class, INTAKE_ROLLER_NAME);
         intakeRoller2 = hardwareMap.get(DcMotorEx.class, INTAKE_ROLLER_2_NAME);
 
         // Intake & Ball Transport

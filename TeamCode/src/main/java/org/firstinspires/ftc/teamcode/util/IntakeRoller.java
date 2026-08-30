@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import java.util.Locale;
 
 /**
  * IntakeRoller provides a closed-loop PIDF controller for intake motors.
@@ -21,7 +24,7 @@ public class IntakeRoller {
     private static final double DEFAULT_KP = 0.01; // Adjust if the motor is too slow to react to load
     private static final double DEFAULT_KI = 0.00; // Adjust to eliminate steady-state error
     private static final double DEFAULT_KD = 0.00; // Adjust to dampen oscillations
-    private static final double DEFAULT_KF = 0.50; // Feedforward: Baseline power needed to spin at ~50% speed
+    private static final double DEFAULT_KF = 0.00; // Feedforward: Baseline power needed to spin at ~50% speed
 
     // Safety limits for the Integral term to prevent "Windup" (runaway power increase)
     private static final double MAX_INTEGRAL_SUM = 250;
@@ -34,6 +37,12 @@ public class IntakeRoller {
     private double lastError = 0.0;
     private double integralSum = 0.0;
     private final ElapsedTime pidTimer = new ElapsedTime();
+
+    // --- DEBUGGING ---
+    private boolean isDebugEnabled = false;
+    private UdpClientPlot plotClient;
+    private String plotClientHost = "192.168.43.100";
+    private int plotClientPort = 7778;
 
     // Manual Mode flag used to switch between Closed-Loop (RPM) and Open-Loop (Raw Power)
     private boolean isManualMode = false;
@@ -59,8 +68,8 @@ public class IntakeRoller {
         this.intakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // 2. Directions are set so positive power pulls game pieces into the robot.
-        this.intakeMotor1.setDirection(DcMotor.Direction.REVERSE);
-        this.intakeMotor2.setDirection(DcMotor.Direction.REVERSE);
+        this.intakeMotor1.setDirection(DcMotor.Direction.FORWARD);
+        this.intakeMotor2.setDirection(DcMotor.Direction.FORWARD);
 
         // 3. ZeroPowerBehavior.FLOAT allows the rollers to spin freely when power is 0.
         this.intakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -73,8 +82,70 @@ public class IntakeRoller {
      * Updates the PIDF gains. Resets the internal state to prevent erratic behavior after change.
      */
     public void setPIDFCoefficients(double kP, double kI, double kD, double kF) {
-        this.kP = kP; this.kI = kI; this.kD = kD; this.kF = kF;
-        reset();
+        boolean changed = false;
+        if (Math.abs(this.kP - kP) > 1e-9) { this.kP = kP; changed = true; }
+        if (Math.abs(this.kI - kI) > 1e-9) { this.kI = kI; changed = true; }
+        if (Math.abs(this.kD - kD) > 1e-9) { this.kD = kD; changed = true; }
+        if (Math.abs(this.kF - kF) > 1e-9) { this.kF = kF; changed = true; }
+
+        if (changed) {
+            reset();
+            if (isDebugEnabled && plotClient != null) {
+                long time = System.currentTimeMillis();
+                plotClient.sendKeyValue(time, "PID_P", String.format(Locale.US, "%.5f", this.kP));
+                plotClient.sendKeyValue(time, "PID_I", String.format(Locale.US, "%.5f", this.kI));
+                plotClient.sendKeyValue(time, "PID_D", String.format(Locale.US, "%.5f", this.kD));
+                plotClient.sendKeyValue(time, "PID_F", String.format(Locale.US, "%.5f", this.kF));
+            }
+        }
+    }
+
+    /**
+     * Enables or disables the UDP plot client for debugging.
+     * @param enable True to enable debugging, false to disable.
+     */
+    public void setDebug(boolean enable) {
+        if (enable && !this.isDebugEnabled) {
+            this.isDebugEnabled = true;
+            if (plotClient == null) {
+                plotClient = new UdpClientPlot(plotClientHost, plotClientPort);
+                if (plotClient.isInitialized()) {
+                    long initTime = System.currentTimeMillis();
+                    plotClient.sendYLimits(initTime, 6500, 0);
+                    plotClient.sendYUnits(initTime + 1, "RPMs");
+                    plotClient.sendYLimits2(initTime + 2, 10.0, 0.0);
+                    plotClient.sendYUnits2(initTime + 3, "Amps");
+                    plotClient.sendSeriesNameLine(initTime + 4, "Target RPM", 1);
+//                    plotClient.sendSeriesNameLine(initTime + 5, "Current RPM", 2);
+//                    plotClient.sendSeriesNameLine2(initTime + 6, "M1 Amps", 3);
+//                    plotClient.sendSeriesNameLine2(initTime + 7, "M2 Amps", 4);
+                    plotClient.sendKeyValue(initTime + 4, "TICKS_PER_REV", String.format(Locale.US, "%.2f", TICKS_PER_REVOLUTION));
+                    plotClient.sendTextMarker(initTime + 5, "IntakeRoller Debug Enabled", "top");
+                }
+            }
+        } else if (!enable && this.isDebugEnabled) {
+            this.isDebugEnabled = false;
+            close();
+        }
+    }
+
+    /**
+     * Checks if debugging is currently enabled.
+     * @return True if enabled, false otherwise.
+     */
+    public boolean isDebugEnabled() {
+        return isDebugEnabled;
+    }
+
+    /**
+     * Closes the UDP plot client.
+     */
+    public void close() {
+        if (plotClient != null) {
+            plotClient.close();
+            plotClient = null;
+        }
+        this.isDebugEnabled = false;
     }
 
     /**
@@ -140,6 +211,14 @@ public class IntakeRoller {
         if (isManualMode) {
             intakeMotor1.setPower(manualPower);
             intakeMotor2.setPower(manualPower);
+
+            if (isDebugEnabled && plotClient != null) {
+                long time = System.currentTimeMillis();
+                plotClient.sendLineY(time, 0, 1);
+                plotClient.sendLineY(time, getCurrentRPM(), 2);
+                plotClient.sendLineY2(time, intakeMotor1.getCurrent(CurrentUnit.AMPS), 3);
+                plotClient.sendLineY2(time, intakeMotor2.getCurrent(CurrentUnit.AMPS), 4);
+            }
             return;
         }
 
@@ -147,11 +226,20 @@ public class IntakeRoller {
         if (targetRPM == 0) {
             intakeMotor1.setPower(0);
             intakeMotor2.setPower(0);
+
+            if (isDebugEnabled && plotClient != null) {
+                long time = System.currentTimeMillis();
+                plotClient.sendLineY(time, targetRPM, 1);
+                plotClient.sendLineY(time, getCurrentRPM(), 2);
+                plotClient.sendLineY2(time, 0.0, 3);
+                plotClient.sendLineY2(time, 0.0, 4);
+                plotClient.sendKeyValue(time, "motorPower", "0.00");
+            }
             return;
         }
 
         // 1. Measure current speed (Ticks per second)
-        double currentVelocityTPS = intakeMotor2.getVelocity();
+        double currentVelocityTPS = intakeMotor1.getVelocity();
 
         // 2. Calculate error (Target vs Actual)
         double error = targetTicksPerSecond - currentVelocityTPS;
@@ -177,10 +265,33 @@ public class IntakeRoller {
 
         // 5. Final Power Calculation (PID + Feedforward)
         // Clip power based on target direction to ensure it only spins the intended way.
-        double motorPower = Range.clip(p + i + d + kF, (targetRPM >= 0) ? 0.0 : -1.0, (targetRPM >= 0) ? 1.0 : 0.0);
+        double motorPower = p + i + d + kF;
+        double motorPowerBeforeClip = motorPower;
+        motorPower = Range.clip(motorPower, (targetRPM >= 0) ? 0.0 : -1.0, (targetRPM >= 0) ? 1.0 : 0.0);
 
         intakeMotor1.setPower(motorPower);
         intakeMotor2.setPower(motorPower);
+
+        if (isDebugEnabled) {
+            long time = System.currentTimeMillis();
+            double currentRPM = getCurrentRPM();
+//            double m1Amps = intakeMotor1.getCurrent(CurrentUnit.AMPS);
+//            double m2Amps = intakeMotor2.getCurrent(CurrentUnit.AMPS);
+
+            plotClient.sendLineY(time, targetRPM, 1);
+            plotClient.sendLineY(time, currentRPM, 2);
+//            plotClient.sendLineY2(time, m1Amps, 3);
+//            plotClient.sendLineY2(time, m2Amps, 4);
+
+//            plotClient.sendKeyValue(time, "motor1_Amps", String.format(Locale.US, "%.3f", m1Amps));
+//            plotClient.sendKeyValue(time, "motor2_Amps", String.format(Locale.US, "%.3f", m2Amps));
+            plotClient.sendKeyValue(time, "motorPower", String.format(Locale.US, "%.3f", motorPower));
+            plotClient.sendKeyValue(time, "motorPowerBeforeClip", String.format(Locale.US, "%.3f", motorPowerBeforeClip));
+            plotClient.sendKeyValue(time, "error", String.format(Locale.US, "%.3f", error));
+            plotClient.sendKeyValue(time, "p", String.format(Locale.US, "%.3f", p));
+            plotClient.sendKeyValue(time, "i", String.format(Locale.US, "%.3f", i));
+            plotClient.sendKeyValue(time, "d", String.format(Locale.US, "%.3f", d));
+        }
     }
 
     /**
@@ -191,5 +302,15 @@ public class IntakeRoller {
         intakeMotor1.setPower(0);
         intakeMotor2.setPower(0);
         reset();
+
+        if (isDebugEnabled && plotClient != null) {
+            long time = System.currentTimeMillis();
+            plotClient.sendTextMarker(time, "IntakeRoller Stopped", "mid");
+            plotClient.sendLineY(time, 0, 1);
+            plotClient.sendLineY(time, 0, 2);
+            plotClient.sendLineY2(time, 0.0, 3);
+            plotClient.sendLineY2(time, 0.0, 4);
+            plotClient.sendKeyValue(time, "motorPower", "0.00");
+        }
     }
 }

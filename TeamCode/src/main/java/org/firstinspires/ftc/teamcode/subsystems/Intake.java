@@ -53,8 +53,8 @@ public class Intake {
     }
 
     // --- Hardware ---
-    private final DcMotor intakeRoller;
-    private final DcMotor intakeRoller2;
+//    private final DcMotor intakeRoller;
+//    private final DcMotor intakeRoller2;
 
     // --- State ---
 
@@ -62,6 +62,8 @@ public class Intake {
     private IntakeState currentIntakeState = IntakeState.OFF;
 
     private IntakeState previousIntakeState = IntakeState.OFF;
+
+    private double forwardRPM = 2200.0;
 
 
     // --- Flag to control color sensor updates ---private boolean isColorSensingEnabled = false;
@@ -72,19 +74,19 @@ public class Intake {
     private double lastIntakeRollerPower = -999;
 
     public Intake(RobotHardware robot) {
-        this.intakeRoller = robot.intakeRoller;
-        this.intakeRoller2 = robot.intakeRoller2;
+//        this.intakeRoller = robot.intakeRoller;
+//        this.intakeRoller2 = robot.intakeRoller2;
 
         // NEW: Cast motors to DcMotorEx to support velocity-based PIDF control
-        DcMotorEx motor1 = (DcMotorEx) robot.intakeRoller;
-        DcMotorEx motor2 = (DcMotorEx) robot.intakeRoller2;
+        DcMotorEx motor1 = robot.intakeRoller1;
+        DcMotorEx motor2 = robot.intakeRoller2;
 
         // NEW: Initialize the PIDF controller utility
         this.rollerController = new IntakeRoller(motor1, motor2);
 
         // NEW: Set PIDF coefficients (kP, kI, kD, kF)
         // 0.5 kF provides ~50% baseline power for the 6000 RPM motors
-        this.rollerController.setPIDFCoefficients(0.01, 0.0, 0.0, 0.5);
+//        this.rollerController.setPIDFCoefficients(0.01, 0.0, 0.0, 0.5);
 
         /* --- OLD CODE (PRE-PIDF) ---
         this.intakeRoller.setDirection(DcMotor.Direction.FORWARD);
@@ -119,8 +121,8 @@ public class Intake {
         if (currentIntakeState != previousIntakeState) {
             switch (currentIntakeState) {
                 case FORWARD:
-                    // NEW: Use PIDF to maintain 3000 RPM (approx 50% speed)
-                    rollerController.setRPM(3000);
+                    // NEW: Use PIDF to maintain the configured forward RPM
+                    rollerController.setRPM(forwardRPM);
                     /* --- OLD CODE ---
                     intakeRoller.setPower(INTAKE_ROLLER_SPEED_FORWARD);
                     intakeRoller2.setPower(INTAKE_ROLLER_SPEED_FORWARD);
@@ -167,6 +169,34 @@ public class Intake {
         */
 
         changeState(IntakeState.OFF);
+    }
+
+    /**
+     * Sets the target RPM for the FORWARD intake state.
+     * @param rpm The target RPM.
+     */
+    public void setForwardRPM(double rpm) {
+        this.forwardRPM = rpm;
+        // If we are currently in FORWARD state, update the controller immediately
+        if (currentIntakeState == IntakeState.FORWARD) {
+            rollerController.setRPM(forwardRPM);
+        }
+    }
+
+    /**
+     * Gets the current target RPM for the FORWARD intake state.
+     * @return The target RPM.
+     */
+    public double getForwardRPM() {
+        return forwardRPM;
+    }
+
+    /**
+     * Enables or disables debugging for the intake roller PIDF controller.
+     * @param enable True to enable, false to disable.
+     */
+    public void setDebug(boolean enable) {
+        rollerController.setDebug(enable);
     }
 
     /**
