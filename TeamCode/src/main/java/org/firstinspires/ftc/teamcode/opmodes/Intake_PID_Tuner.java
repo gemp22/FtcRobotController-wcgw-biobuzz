@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.util.IntakeRoller;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.MovingStatistics;
+import com.qualcomm.hardware.lynx.LynxModule;
 import java.util.Locale;
 
 /**
@@ -22,6 +23,7 @@ import java.util.Locale;
  * D-Pad Right/Left: Tune I
  * B / A Buttons:    Tune D
  * L / R Bumpers:    Tune F
+ * Back Button:      Toggle Plotting (Debug)
  */
 @TeleOp(name = "Intake PID Tuner", group = "Test")
 public class Intake_PID_Tuner extends OpMode {
@@ -29,6 +31,9 @@ public class Intake_PID_Tuner extends OpMode {
     private RobotHardware robot;
     private Intake intake;
     private Drivetrain drivetrain;
+
+    private boolean isPlotting = false;
+    private boolean lastBackButton = false;
 
     private MovingStatistics loopTimes = new MovingStatistics(100);
     private ElapsedTime loopTimer = new ElapsedTime();
@@ -53,33 +58,14 @@ public class Intake_PID_Tuner extends OpMode {
 
     @Override
     public void loop() {
+        for (LynxModule module : robot.allHubs) {
+            module.clearBulkCache();
+        }
+
         loopTimer.reset();
 
-        // G1: Driving & Intake Toggles (Matching TeleOp Main)
-        drivetrain.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x * 1.1, -gamepad1.right_stick_x);
-        
-        if (gamepad1.b) intake.changeState(Intake.IntakeState.FORWARD);
-        if (gamepad1.x) intake.changeState(Intake.IntakeState.REVERSE);
-        if (gamepad1.y) intake.changeState(Intake.IntakeState.OFF);
-
-        // G2: PIDF Tuning
-        IntakeRoller roller = intake.getRollerController();
-        
-        // P Tuning
-        if (gamepad2.dpad_up)    roller.adjustP(P_INCREMENT);
-        if (gamepad2.dpad_down)  roller.adjustP(-P_INCREMENT);
-        
-        // I Tuning
-        if (gamepad2.dpad_right) roller.adjustI(I_INCREMENT);
-        if (gamepad2.dpad_left)  roller.adjustI(-I_INCREMENT);
-        
-        // D Tuning
-        if (gamepad2.b)          roller.adjustD(D_INCREMENT);
-        if (gamepad2.a)          roller.adjustD(-D_INCREMENT);
-        
-        // F Tuning
-        if (gamepad2.right_bumper) roller.adjustF(F_INCREMENT);
-        if (gamepad2.left_bumper)  roller.adjustF(-F_INCREMENT);
+        handleDriverControls();
+        handleTuningControls();
 
         // Subsystem Heartbeats
         drivetrain.update();
@@ -91,6 +77,43 @@ public class Intake_PID_Tuner extends OpMode {
         loopTimes.add(loopTimer.nanoseconds());
     }
 
+    private void handleDriverControls() {
+        // G1: Driving & Intake Toggles (Matching TeleOp Main)
+        drivetrain.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x * 1.1, -gamepad1.right_stick_x);
+
+        if (gamepad1.b) intake.changeState(Intake.IntakeState.FORWARD);
+        if (gamepad1.x) intake.changeState(Intake.IntakeState.REVERSE);
+        if (gamepad1.y) intake.changeState(Intake.IntakeState.OFF);
+    }
+
+    private void handleTuningControls() {
+        // G2: PIDF Tuning
+        IntakeRoller roller = intake.getRollerController();
+
+        // P Tuning
+        if (gamepad2.dpad_up)    roller.adjustP(P_INCREMENT);
+        if (gamepad2.dpad_down)  roller.adjustP(-P_INCREMENT);
+
+        // I Tuning
+        if (gamepad2.dpad_right) roller.adjustI(I_INCREMENT);
+        if (gamepad2.dpad_left)  roller.adjustI(-I_INCREMENT);
+
+        // D Tuning
+        if (gamepad2.b)          roller.adjustD(D_INCREMENT);
+        if (gamepad2.a)          roller.adjustD(-D_INCREMENT);
+
+        // F Tuning
+        if (gamepad2.right_bumper) roller.adjustF(F_INCREMENT);
+        if (gamepad2.left_bumper)  roller.adjustF(-F_INCREMENT);
+
+        // Debug Plotting Toggle
+        if (gamepad2.back && !lastBackButton) {
+            isPlotting = !isPlotting;
+            roller.setDebug(isPlotting);
+        }
+        lastBackButton = gamepad2.back;
+    }
+
     private void updateTelemetry() {
         IntakeRoller roller = intake.getRollerController();
 
@@ -99,11 +122,12 @@ public class Intake_PID_Tuner extends OpMode {
                 roller.getkP(), roller.getkI(), roller.getkD(), roller.getkF()));
         telemetry.addData("RPM", "Tgt:%.0f | Act:%.0f", roller.getTargetRPM(), roller.getCurrentRPM());
         telemetry.addData("State", intake.getIntakeState().toString());
+        telemetry.addData("Plotting", isPlotting ? "ENABLED" : "DISABLED");
 
         telemetry.addLine("\n--- CONTROLS ---");
         telemetry.addLine("G1: B:FWD | X:REV | Y:OFF");
         telemetry.addLine("G2: DPAD U/D:P | DPAD R/L:I");
-        telemetry.addLine("G2: B/A:D | Bumpers:F");
+        telemetry.addLine("G2: B/A:D | Bumpers:F | Back:Plot");
         
         telemetry.update();
     }
@@ -112,5 +136,6 @@ public class Intake_PID_Tuner extends OpMode {
     public void stop() {
         drivetrain.stop();
         intake.stop();
+        intake.getRollerController().close();
     }
 }
