@@ -11,7 +11,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.util.BallColor;
+import org.firstinspires.ftc.teamcode.util.HuskyLensUtil;
 import org.firstinspires.ftc.teamcode.util.IntakeRoller;
+
+import java.util.Locale;
 
 
 /**
@@ -39,6 +42,8 @@ public class Intake {
     private static final long ROLLER_BED_SHAKE_REVERSE_MS = 400;
     private static final double ROLLER_BED_SHAKE_SPEED = 0.7;
 
+    private boolean isCameraSensingEnabled = false;
+
     private static final double LEFT_GATE_OPEN_POS = 1;
     private static final double LEFT_GATE_CLOSE_POS = 0.279;
     private static final double MID_GATE_OPEN_POS = 0;
@@ -53,9 +58,7 @@ public class Intake {
     }
 
     // --- Hardware ---
-//    private final DcMotor intakeRoller;
-//    private final DcMotor intakeRoller2;
-
+    private final HuskyLensUtil intakeCamera;
     // --- State ---
 
 
@@ -80,6 +83,8 @@ public class Intake {
         // NEW: Cast motors to DcMotorEx to support velocity-based PIDF control
         DcMotorEx motor1 = robot.intakeRoller1;
         DcMotorEx motor2 = robot.intakeRoller2;
+
+        this.intakeCamera = new HuskyLensUtil(robot);
 
         // NEW: Initialize the PIDF controller utility
         this.rollerController = new IntakeRoller(motor1, motor2);
@@ -153,6 +158,7 @@ public class Intake {
 
         // NEW: Heartbeat - calculates and applies motor power every loop
         rollerController.update();
+        intakeCamera.update();
     }
 
 
@@ -170,6 +176,29 @@ public class Intake {
 
         changeState(IntakeState.OFF);
     }
+
+
+    /**
+     * Checks if the intake camera currently detects a ball.
+     * @return True if a ball is detected.
+     */
+    public boolean isBallInFront() {
+        return intakeCamera.isBallDetected();
+    }
+
+
+    /**
+     * A convenience method to get the horizontal position of the target.
+     * Prioritizes the center of a cluster if detected, otherwise the best single ball.
+     * @return The X-coordinate (0-319), or -1 if nothing is detected.
+     */
+    public int getFrontBallPositionX() {
+        if (intakeCamera.isClusterDetected()) {
+            return intakeCamera.getBestCluster().centerX;
+        }
+        return (intakeCamera.getBestBall() != null) ? intakeCamera.getBestBall().x : -1;
+    }
+
 
     /**
      * Sets the target RPM for the FORWARD intake state.
@@ -228,8 +257,20 @@ public class Intake {
      */
 
     public void changeState(IntakeState newState) {
+        System.out.printf(Locale.US, "INTAKE: Previous state: %s New State: %s %n", currentIntakeState, newState);
         currentIntakeState = newState;
+    }
 
+    public void setIntakeRoller(boolean on) {
+        if (on) {
+            changeState(IntakeState.FORWARD);
+        } else {
+            changeState(IntakeState.OFF);
+        }
+    }
+
+    public void enableCameraSensing(boolean enable) {
+        this.isCameraSensingEnabled = enable;
     }
 
     public IntakeRoller getRollerController() {
