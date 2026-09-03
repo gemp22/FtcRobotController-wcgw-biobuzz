@@ -36,6 +36,19 @@ public class CommandFactory {
                 double heading = Double.parseDouble(args.get(2));
                 return new SetInitialPoseCommand(x, y, heading);
 
+            case "AutoIntakeCommand":
+                if (args.isEmpty()) throw new IllegalArgumentException("AutoIntakeCommand requires at least targetInitialHeading.");
+                double targetInitialHeading = Double.parseDouble(args.get(0));
+                if (args.size() == 1) {
+                    return new AutoIntakeCommand(targetInitialHeading);
+                } else {
+                    boolean canScan = Boolean.parseBoolean(args.get(1));
+                    double searchTimeout = Double.parseDouble(args.get(2));
+                    double blindDriveInches = Double.parseDouble(args.get(3));
+                    double maxTotalDistance = Double.parseDouble(args.get(4));
+                    return new AutoIntakeCommand(targetInitialHeading, canScan, searchTimeout, blindDriveInches, maxTotalDistance);
+                }
+
             case "WaitCommand":
                 if (args.isEmpty()) throw new IllegalArgumentException("WaitCommand requires a duration argument.");
                 double waitTime = Double.parseDouble(args.get(0));
