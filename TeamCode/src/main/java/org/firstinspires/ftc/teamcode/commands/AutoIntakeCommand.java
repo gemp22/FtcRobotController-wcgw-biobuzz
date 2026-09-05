@@ -174,7 +174,7 @@ public class AutoIntakeCommand extends CommandBase {
                 break;
 
             case CHASING:
-                if (!intake.isBallInFront()) {
+                if (!intake.isBallInFront() && intake.lastBallTime() > 300) {
                     log(getName(), "Target lost close-up. Finishing blind.");
                     transitionTo(State.BLIND_FINISH);
                     return;

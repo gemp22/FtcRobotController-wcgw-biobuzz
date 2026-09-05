@@ -451,6 +451,8 @@ public class AutoSequenceFactory {
 
         scheduler.add(new SetInitialPoseCommand(-56, y(14.00), h(0.00)).withName("Start Pose"));
 
+        intake.changeState(Intake.IntakeState.FORWARD);
+
         scheduler.add(new AutoIntakeCommand(-90.00, true, 5.0, 0, 60)
                 .withName("Husky Drive"));
 

@@ -727,6 +727,7 @@ public class TeleOp_Main extends OpMode {
 //        telemetry.addData("Ball Colors", intake.getBallStatusString());
 //        telemetry.addData("Feeder State", intake.getFeederState().toString());
 //        telemetry.addData("Bed Speed", "%.2f", intake.getRollerBedSpeed());
+        intake.addIntakeCameraTelemetry(telemetry);
 
         // Turret Telemetry with new aiming data
         telemetry.addData("Turret Mode", turretState.toString());

@@ -64,6 +64,8 @@ public class Intake {
 
     private IntakeState currentIntakeState = IntakeState.OFF;
 
+
+
     private IntakeState previousIntakeState = IntakeState.OFF;
 
     private double forwardRPM = 2200.0;
@@ -128,7 +130,9 @@ public class Intake {
                 case FORWARD:
                     // NEW: Use PIDF to maintain the configured forward RPM
                     rollerController.setRPM(forwardRPM);
+//                    rollerController.setPower(1.0);
                     /* --- OLD CODE ---
+
                     intakeRoller.setPower(INTAKE_ROLLER_SPEED_FORWARD);
                     intakeRoller2.setPower(INTAKE_ROLLER_SPEED_FORWARD);
                     */
@@ -255,6 +259,14 @@ public class Intake {
      * Gets the current state of the feeders.
      * @return The FeederState enum (OFF, FORWARD, or REVERSE).
      */
+
+    public void addIntakeCameraTelemetry(Telemetry telemetry) {
+        intakeCamera.addTelemetry(telemetry);
+    }
+
+    public double lastBallTime() {
+        return intakeCamera.getLastBallDetected();
+    }
 
     public void changeState(IntakeState newState) {
         System.out.printf(Locale.US, "INTAKE: Previous state: %s New State: %s %n", currentIntakeState, newState);

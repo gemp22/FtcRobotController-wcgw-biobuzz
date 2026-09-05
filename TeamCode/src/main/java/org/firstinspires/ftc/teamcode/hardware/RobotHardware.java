@@ -41,6 +41,10 @@ public class RobotHardware {
 
 
     public static final String INTAKE_CAMERA_NAME = "huskylens";
+
+    public static final String LIFT_MOTOR_1_NAME = "lift_motor_1";
+
+    public static final String LIFT_MOTOR_2_NAME = "lift_motor_2";
     //    // Intake & Ball Transport
 //    public static final String INTAKE_ROLLER_NAME = "intake_roller";
 //    public static final String ROLLER_BED_MOTOR_NAME = "turret_encoder"; // we use the same port for the turret encoder and the roller bed motor
@@ -88,6 +92,10 @@ public class RobotHardware {
     public GoBildaPinpointDriver odo;
 
     public HuskyLens huskyLens;
+
+
+    public DcMotorEx liftMotor1;
+    public DcMotorEx liftMotor2;
 
     // Intake & Ball Transport
 //    public DcMotor intakeRoller;
@@ -143,6 +151,8 @@ public class RobotHardware {
         odo = hardwareMap.get(GoBildaPinpointDriver.class, ODO_NAME);
         intakeRoller1 = hardwareMap.get(DcMotorEx.class, INTAKE_ROLLER_NAME);
         intakeRoller2 = hardwareMap.get(DcMotorEx.class, INTAKE_ROLLER_2_NAME);
+        liftMotor1 = hardwareMap.get(DcMotorEx.class, LIFT_MOTOR_1_NAME);
+        liftMotor2 = hardwareMap.get(DcMotorEx.class, LIFT_MOTOR_2_NAME);
 
         // Intake & Ball Transport
 //        intakeRoller = hardwareMap.get(DcMotor.class, INTAKE_ROLLER_NAME);

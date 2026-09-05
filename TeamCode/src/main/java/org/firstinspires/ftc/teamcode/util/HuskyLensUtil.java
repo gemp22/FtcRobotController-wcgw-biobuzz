@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 
@@ -13,6 +15,8 @@ import java.util.List;
  * of balls to locate high-density collection zones.
  */
 public class HuskyLensUtil {
+
+    private ElapsedTime lastBallDetected = new ElapsedTime();
 
     /**
      * A simple data class to hold information about a detected ball.
@@ -31,6 +35,7 @@ public class HuskyLensUtil {
             this.width = block.width;
             this.height = block.height;
         }
+
 
         /**
          * Provides a simple string representation for telemetry.
@@ -116,6 +121,7 @@ public class HuskyLensUtil {
         List<BallData> allBalls = new ArrayList<>();
         for (HuskyLens.Block block : blocks) {
             allBalls.add(new BallData(block));
+            lastBallDetected.reset();
         }
 
         // --- Find Best Individual Ball ---
@@ -203,6 +209,10 @@ public class HuskyLensUtil {
         return bestCluster;
     }
 
+
+    public double getLastBallDetected() {
+        return lastBallDetected.milliseconds();
+    }
     /**
      * Adds comprehensive telemetry for both single targets and clusters.
      */
