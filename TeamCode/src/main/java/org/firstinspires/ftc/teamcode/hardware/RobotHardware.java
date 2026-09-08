@@ -43,8 +43,8 @@ public class RobotHardware {
     public static final String INTAKE_CAMERA_NAME = "huskylens";
 
     public static final String LIFT_MOTOR_1_NAME = "lift_motor_1";
-
     public static final String LIFT_MOTOR_2_NAME = "lift_motor_2";
+    public static final String LIFT_LIMIT_SWITCH_NAME = "lift_limit_switch";
     //    // Intake & Ball Transport
 //    public static final String INTAKE_ROLLER_NAME = "intake_roller";
 //    public static final String ROLLER_BED_MOTOR_NAME = "turret_encoder"; // we use the same port for the turret encoder and the roller bed motor
@@ -96,6 +96,7 @@ public class RobotHardware {
 
     public DcMotorEx liftMotor1;
     public DcMotorEx liftMotor2;
+    public DigitalChannel liftLimitSwitch;
 
     // Intake & Ball Transport
 //    public DcMotor intakeRoller;
@@ -153,6 +154,7 @@ public class RobotHardware {
         intakeRoller2 = hardwareMap.get(DcMotorEx.class, INTAKE_ROLLER_2_NAME);
         liftMotor1 = hardwareMap.get(DcMotorEx.class, LIFT_MOTOR_1_NAME);
         liftMotor2 = hardwareMap.get(DcMotorEx.class, LIFT_MOTOR_2_NAME);
+        liftLimitSwitch = hardwareMap.get(DigitalChannel.class, LIFT_LIMIT_SWITCH_NAME);
 
         // Intake & Ball Transport
 //        intakeRoller = hardwareMap.get(DcMotor.class, INTAKE_ROLLER_NAME);
