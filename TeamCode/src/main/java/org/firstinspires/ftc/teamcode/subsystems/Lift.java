@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.util.LiftArm;
@@ -18,10 +19,12 @@ public class Lift {
     public static final int POSITION_TOP = 2690;
     public static final int POSITION_TOLERANCE = 0;
 
+    public boolean  isLimitPressed = false;
+
     private LiftState currentLiftState = LiftState.BOTTOM;
     private LiftState previousLiftState = LiftState.BOTTOM;
     private int targetPosition = 0;
-    private double manualPower = 0;
+    public double manualPower = 0;
     private boolean isManual = true;
 
     public enum LiftState {
@@ -35,15 +38,17 @@ public class Lift {
 
         DcMotorEx liftMotor1 = robot.liftMotor1;
         DcMotorEx liftMotor2 = robot.liftMotor2;
-        DigitalChannel liftLimitSwitch = robot.liftLimitSwitch;
+        TouchSensor liftLimitSwitch = robot.liftLimitSwitch;
 
         this.liftController = new LiftArm(liftMotor1, liftMotor2, liftLimitSwitch);
     }
 
     public void update() {
-        if (liftController.isLimitPressed() && Math.abs(liftController.getCurrentPosition()) > 10) {
+        if (liftController.isLimitPressed() && !isLimitPressed) {
+            isLimitPressed = true;
             liftController.resetEncoders();
-        }
+        } else if (!liftController.isLimitPressed()) {isLimitPressed = false;}
+
         if (currentLiftState != previousLiftState) {
             switch (currentLiftState) {
                 case TOP:
@@ -68,6 +73,14 @@ public class Lift {
         if (currentLiftState == LiftState.MANUAL) {
             liftController.setPower(manualPower);
         }
+    }
+
+    public double getLiftHeight() {
+        return liftController.getLiftPosition();
+    }
+
+    public boolean isLimitPressed() {
+        return liftController.isLimitPressed();
     }
 
     public void setManualControl(double power) {

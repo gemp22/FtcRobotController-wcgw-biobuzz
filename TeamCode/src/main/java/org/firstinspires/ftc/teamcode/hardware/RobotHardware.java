@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import android.text.method.Touch;
+
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver; // Assuming this is the correct package for GoBildaPinpointDriver
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.List;
 
@@ -96,7 +99,7 @@ public class RobotHardware {
 
     public DcMotorEx liftMotor1;
     public DcMotorEx liftMotor2;
-    public DigitalChannel liftLimitSwitch;
+    public TouchSensor liftLimitSwitch;
 
     // Intake & Ball Transport
 //    public DcMotor intakeRoller;
@@ -154,7 +157,7 @@ public class RobotHardware {
         intakeRoller2 = hardwareMap.get(DcMotorEx.class, INTAKE_ROLLER_2_NAME);
         liftMotor1 = hardwareMap.get(DcMotorEx.class, LIFT_MOTOR_1_NAME);
         liftMotor2 = hardwareMap.get(DcMotorEx.class, LIFT_MOTOR_2_NAME);
-        liftLimitSwitch = hardwareMap.get(DigitalChannel.class, LIFT_LIMIT_SWITCH_NAME);
+        liftLimitSwitch = hardwareMap.get(TouchSensor.class, LIFT_LIMIT_SWITCH_NAME);
 
         // Intake & Ball Transport
 //        intakeRoller = hardwareMap.get(DcMotor.class, INTAKE_ROLLER_NAME);
