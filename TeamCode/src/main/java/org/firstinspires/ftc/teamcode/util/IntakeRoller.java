@@ -75,6 +75,7 @@ public class IntakeRoller {
         this.intakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.intakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
+
         pidTimer.reset();
     }
 
