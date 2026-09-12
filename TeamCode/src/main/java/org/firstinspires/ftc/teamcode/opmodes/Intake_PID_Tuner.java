@@ -76,7 +76,7 @@ public class Intake_PID_Tuner extends OpMode {
         // G1: Driving & Intake Toggles (Matching TeleOp Main)
         drivetrain.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x * 1.1, -gamepad1.right_stick_x);
 
-        lift.setManualControl(gamepad2.left_stick_y);
+        lift.setManualControl(-gamepad2.left_stick_y);
         
         if (gamepad1.b) intake.changeState(Intake.IntakeState.FORWARD);
         if (gamepad1.x) intake.changeState(Intake.IntakeState.REVERSE);

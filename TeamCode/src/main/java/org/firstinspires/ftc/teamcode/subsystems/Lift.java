@@ -22,8 +22,8 @@ public class Lift {
 
     // --- State Variables ---
     public boolean isLimitPressed = false;
-    private LiftState currentLiftState = LiftState.BOTTOM;
-    private LiftState previousLiftState = LiftState.BOTTOM;
+    private LiftState currentLiftState = LiftState.MANUAL;
+    private LiftState previousLiftState = LiftState.MANUAL;
     public double manualPower = 0;
 
     /**
@@ -87,6 +87,7 @@ public class Lift {
         
         // Execute underlying closed-loop PID controllers or manual hardware updates
         liftController.update();
+
     }
 
     /**

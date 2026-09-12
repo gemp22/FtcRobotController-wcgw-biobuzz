@@ -25,9 +25,9 @@ public class LiftArm {
     private static final double LIFT_SPEED = 1.0;
 
     // --- Default PIDF Tuning Gains ---
-    private static final double DEFAULT_KP = 0.005;
-    private static final double DEFAULT_KI = 0.000;
-    private static final double DEFAULT_KD = 0.000;
+    private static final double DEFAULT_KP = 0.0021;
+    private static final double DEFAULT_KI = 0.00025;
+    private static final double DEFAULT_KD = 0.00005;
     private static final double DEFAULT_KF = 0.000;
 
     // --- Advanced Integral Stability Constraints ---
@@ -58,7 +58,7 @@ public class LiftArm {
         this.liftLimitSwitch = liftLimitSwitch;
 
         // Synchronize opposite-facing physical orientations to match uniform vertical tracking
-        liftMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Flash encoder registers back down cleanly to zero points
@@ -72,6 +72,7 @@ public class LiftArm {
         // Turn on aggressive static holding resistance blocks to counteract passive carriage drop forces
         liftMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         setPIDFCoefficients(DEFAULT_KP, DEFAULT_KI, DEFAULT_KD, DEFAULT_KF);
     }
@@ -143,7 +144,7 @@ public class LiftArm {
      */
     public int getLiftPosition() {
         int currentPosition = liftMotor1.getCurrentPosition();
-        return -currentPosition;
+        return currentPosition;
     }
 
     /**
